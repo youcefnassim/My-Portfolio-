@@ -243,8 +243,13 @@ body {
     justify-content: center;
     align-items: center;
 }
-
-
+.home-sci {
+    position: absolute;
+    bottom: 4rem;
+    width: 230px; /* Augmenté de 170px à 230px pour accommoder les nouveaux icônes */
+    display: flex;
+    justify-content: space-between;
+}
 /* Sections communes */
 section {
     min-height: 100vh;
@@ -1394,4 +1399,5 @@ section {
         min-height: auto;
         padding: 2rem !important;
     }
+
 }
