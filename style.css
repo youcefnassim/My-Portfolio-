@@ -967,7 +967,42 @@ section {
 .contact form .textarea-field:focus-within .focus {
     width: 100%;
 }
+/* Améliorations pour le formulaire de contact */
+.contact form .input-field.focused .focus,
+.contact form .textarea-field.focused .focus {
+    width: 100%;
+}
 
+.contact form .input:focus,
+.contact form .textarea:focus {
+    border-color: var(--main-color);
+    box-shadow: var(--neon-effect);
+}
+
+.contact form .input:invalid:not(:focus):not(:placeholder-shown),
+.contact form .textarea:invalid:not(:focus):not(:placeholder-shown) {
+    border-color: #ff3860;
+}
+
+.contact form .input:valid:not(:focus):not(:placeholder-shown),
+.contact form .textarea:valid:not(:focus):not(:placeholder-shown) {
+    border-color: #23d160;
+}
+
+/* Animation pour le bouton d'envoi */
+.btn-box .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.bx-loader-alt {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 /* Footer */
 .footer {
     display: flex;
@@ -1401,3 +1436,4 @@ section {
     }
 
 }
+
