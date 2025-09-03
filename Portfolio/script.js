@@ -278,5 +278,344 @@ function initParticles() {
     animateParticles();
 }
 
-// Démarrer les particules (optionnel)
-// initParticles();
+// Galerie de projets
+document.addEventListener('DOMContentLoaded', function() {
+    // Données des projets avec leurs images
+    const projectsData = {
+        educmed: {
+            images: ['img/20.jpg', 'img/21.jpg', 'img/22.jpg', 'img/23.jpg'],
+            description: "Plateforme éducative médicale offrant des ressources pédagogiques pour les étudiants en médecine. Conception d'une interface intuitive avec système de connexion et espace personnel."
+        },
+        gym131: {
+            images: ['img/30.jpg', 'img/31.jpg', 'img/32.jpg', 'img/33.jpg'],
+            description: "Site web moderne pour une salle de sport premium. Présentation des services, programmes d'entraînement et formulaire de contact intégré."
+        },
+    
+        coffeeshop: {
+            images: ['img/11.jpg', 'img/12.jpg', 'img/14.jpg', 'img/15.jpg'],
+            description: "Site vitrine élégant pour un café boutique. Présentation du menu, des événements et formulaire de réservation. Design chaleureux et responsive."
+        }
+    };
+
+    // Éléments de la modale
+    const modal = document.getElementById('galleryModal');
+    const modalTitle = document.querySelector('.modal-title');
+    const mainImage = document.getElementById('mainGalleryImage');
+    const currentImageSpan = document.getElementById('currentImage');
+    const totalImagesSpan = document.getElementById('totalImages');
+    const thumbnailContainer = document.getElementById('thumbnailContainer');
+    const projectDescription = document.getElementById('projectDescription');
+    const closeModal = document.querySelector('.close-modal');
+    const prevButton = document.querySelector('.gallery-prev');
+    const nextButton = document.querySelector('.gallery-next');
+    
+    let currentProject = null;
+    let currentImageIndex = 0;
+
+    // Ouvrir la modale de galerie
+    document.querySelectorAll('.gallery-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const projectId = this.getAttribute('data-project');
+            openGallery(projectId);
+        });
+    });
+
+    // Fermer la modale
+    closeModal.addEventListener('click', closeGallery);
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeGallery();
+    });
+
+    // Navigation entre les images
+    prevButton.addEventListener('click', showPrevImage);
+    nextButton.addEventListener('click', showNextImage);
+
+    // Fonction pour ouvrir la galerie
+    function openGallery(projectId) {
+        if (!projectsData[projectId]) return;
+        
+        currentProject = projectId;
+        currentImageIndex = 0;
+        
+        // Mettre à jour le titre
+        const projectName = document.querySelector(`[data-project="${projectId}"]`).closest('.portfolio-layer').querySelector('h4').textContent;
+        modalTitle.textContent = `Galerie - ${projectName}`;
+        
+        // Charger les images
+        loadImages(projectsData[projectId].images);
+        
+        // Mettre à jour la description
+        projectDescription.textContent = projectsData[projectId].description;
+        
+        // Afficher la modale
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Empêcher le défilement
+    }
+
+    // Fonction pour fermer la galerie
+    function closeGallery() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Réactiver le défilement
+    }
+
+    // Fonction pour charger les images
+    function loadImages(images) {
+        // Vider les miniatures existantes
+        thumbnailContainer.innerHTML = '';
+        
+        // Mettre à jour le compteur total
+        totalImagesSpan.textContent = images.length;
+        
+        // Charger chaque image
+        images.forEach((imageSrc, index) => {
+            // Créer la miniature
+            const thumbnail = document.createElement('img');
+            thumbnail.src = imageSrc;
+            thumbnail.alt = `Miniature ${index + 1}`;
+            thumbnail.classList.add('thumbnail');
+            if (index === 0) thumbnail.classList.add('active');
+            
+            thumbnail.addEventListener('click', () => showImage(index));
+            thumbnailContainer.appendChild(thumbnail);
+        });
+        
+        // Afficher la première image
+        showImage(0);
+    }
+
+    // Fonction pour afficher une image spécifique
+    function showImage(index) {
+        if (!currentProject || !projectsData[currentProject]) return;
+        
+        const images = projectsData[currentProject].images;
+        if (index < 0) index = images.length - 1;
+        if (index >= images.length) index = 0;
+        
+        currentImageIndex = index;
+        mainImage.src = images[index];
+        currentImageSpan.textContent = index + 1;
+        
+        // Mettre à jour les miniatures actives
+        document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+            thumb.classList.toggle('active', i === index);
+        });
+    }
+
+    // Fonction pour afficher l'image précédente
+    function showPrevImage() {
+        showImage(currentImageIndex - 1);
+    }
+
+    // Fonction pour afficher l'image suivante
+    function showNextImage() {
+        showImage(currentImageIndex + 1);
+    }
+
+    // Navigation au clavier
+    document.addEventListener('keydown', function(e) {
+        if (modal.style.display === 'block') {
+            if (e.key === 'Escape') closeGallery();
+            if (e.key === 'ArrowLeft') showPrevImage();
+            if (e.key === 'ArrowRight') showNextImage();
+        }
+    });
+
+    // Navigation tactile pour mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    mainImage.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    mainImage.addEventListener('touchend', function(e) {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, false);
+
+    function handleSwipe() {
+        const minSwipeDistance = 50; // Distance minimale pour considérer un swipe
+        
+        if (touchEndX < touchStartX && touchStartX - touchEndX > minSwipeDistance) {
+            showNextImage(); // Swipe gauche
+        }
+        
+        if (touchEndX > touchStartX && touchEndX - touchStartX > minSwipeDistance) {
+            showPrevImage(); // Swipe droit
+        }
+    }
+});
+    // Fermer la modale
+    closeModal.addEventListener('click', closeGallery);
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeGallery();
+    });
+    
+    // Navigation
+    prevBtn.addEventListener('click', showPrevImage);
+    nextBtn.addEventListener('click', showNextImage);
+    
+    // Navigation au clavier
+    document.addEventListener('keydown', function(e) {
+        if (modal.style.display === 'block') {
+            if (e.key === 'Escape') closeGallery();
+            if (e.key === 'ArrowLeft') showPrevImage();
+            if (e.key === 'ArrowRight') showNextImage();
+        }
+    });
+    
+    function loadGallery(images) {
+        // Vider les miniatures
+        thumbnailsContainer.innerHTML = '';
+        
+        // Charger la première image
+        mainImage.src = images[0];
+        mainImage.alt = `Image ${currentIndex + 1} du projet`;
+        
+        // Créer les miniatures
+        images.forEach((image, index) => {
+            const thumbnail = document.createElement('div');
+            thumbnail.className = 'thumbnail';
+            if (index === 0) thumbnail.classList.add('active');
+            
+            const img = document.createElement('img');
+            img.src = image;
+            img.alt = `Miniature ${index + 1}`;
+            
+            thumbnail.appendChild(img);
+            thumbnail.addEventListener('click', () => selectImage(index));
+            
+            thumbnailsContainer.appendChild(thumbnail);
+        });
+        
+        // Mettre à jour les boutons de navigation
+        updateNavButtons();
+    }
+    
+    function selectImage(index) {
+        currentIndex = index;
+        mainImage.src = projectGalleries[currentProject][index];
+        mainImage.alt = `Image ${index + 1} du projet`;
+        
+        // Mettre à jour les miniatures actives
+        document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+            thumb.classList.toggle('active', i === index);
+        });
+        
+        updateNavButtons();
+    }
+    
+    function showPrevImage() {
+        if (currentIndex > 0) {
+            selectImage(currentIndex - 1);
+        }
+    }
+    
+    function showNextImage() {
+        if (currentIndex < projectGalleries[currentProject].length - 1) {
+            selectImage(currentIndex + 1);
+        }
+    }
+    
+    function updateNavButtons() {
+        prevBtn.style.opacity = currentIndex > 0 ? '1' : '0.5';
+        nextBtn.style.opacity = currentIndex < projectGalleries[currentProject].length - 1 ? '1' : '0.5';
+    }
+    
+    function closeGallery() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+    // Gestion du formulaire de contact
+const contactForm = document.querySelector('.contact form');
+
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        // Vous pouvez ajouter ici une validation supplémentaire si nécessaire
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = 'Envoi en cours...';
+        submitBtn.disabled = true;
+        
+        // Le formulaire sera soumis à FormSubmit qui gère l'envoi par email
+        // FormSubmit redirigera vers la page de remerciement
+    });
+}
+
+// Animation pour les champs du formulaire
+document.querySelectorAll('.input, .textarea').forEach(input => {
+    input.addEventListener('focus', function() {
+        this.parentElement.classList.add('focused');
+    });
+    
+    input.addEventListener('blur', function() {
+        if (this.value === '') {
+            this.parentElement.classList.remove('focused');
+        }
+    });
+});// Gestion du formulaire de contact
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.querySelector('.contact form');
+    
+    if (contactForm) {
+        // Animation des champs de formulaire
+        const formFields = contactForm.querySelectorAll('.input, .textarea');
+        
+        formFields.forEach(field => {
+            // Vérifier si le champ a déjà une valeur au chargement
+            if (field.value !== '') {
+                field.parentElement.classList.add('focused');
+            }
+            
+            field.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            field.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+        });
+        
+        // Gestion de la soumission du formulaire
+        contactForm.addEventListener('submit', function(e) {
+            // Validation basique
+            let isValid = true;
+            const requiredFields = this.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = 'red';
+                    
+                    field.addEventListener('input', function() {
+                        if (this.value.trim()) {
+                            this.style.borderColor = '';
+                        }
+                    });
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+            
+            // Animation de chargement
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'Envoi en cours... <i class="bx bx-loader-alt bx-spin"></i>';
+            submitBtn.disabled = true;
+            
+            // Réactiver le bouton après 5 secondes au cas où l'envoi échouerait
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 5000);
+            
+            // Le formulaire sera soumis à FormSubmit qui gère l'envoi par email
+            // FormSubmit redirigera vers la page de remerciement
+        });
+    }
+});
