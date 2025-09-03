@@ -526,3 +526,96 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
     }
+    // Gestion du formulaire de contact
+const contactForm = document.querySelector('.contact form');
+
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        // Vous pouvez ajouter ici une validation supplémentaire si nécessaire
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = 'Envoi en cours...';
+        submitBtn.disabled = true;
+        
+        // Le formulaire sera soumis à FormSubmit qui gère l'envoi par email
+        // FormSubmit redirigera vers la page de remerciement
+    });
+}
+
+// Animation pour les champs du formulaire
+document.querySelectorAll('.input, .textarea').forEach(input => {
+    input.addEventListener('focus', function() {
+        this.parentElement.classList.add('focused');
+    });
+    
+    input.addEventListener('blur', function() {
+        if (this.value === '') {
+            this.parentElement.classList.remove('focused');
+        }
+    });
+});// Gestion du formulaire de contact
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.querySelector('.contact form');
+    
+    if (contactForm) {
+        // Animation des champs de formulaire
+        const formFields = contactForm.querySelectorAll('.input, .textarea');
+        
+        formFields.forEach(field => {
+            // Vérifier si le champ a déjà une valeur au chargement
+            if (field.value !== '') {
+                field.parentElement.classList.add('focused');
+            }
+            
+            field.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            field.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+        });
+        
+        // Gestion de la soumission du formulaire
+        contactForm.addEventListener('submit', function(e) {
+            // Validation basique
+            let isValid = true;
+            const requiredFields = this.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = 'red';
+                    
+                    field.addEventListener('input', function() {
+                        if (this.value.trim()) {
+                            this.style.borderColor = '';
+                        }
+                    });
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+            
+            // Animation de chargement
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'Envoi en cours... <i class="bx bx-loader-alt bx-spin"></i>';
+            submitBtn.disabled = true;
+            
+            // Réactiver le bouton après 5 secondes au cas où l'envoi échouerait
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 5000);
+            
+            // Le formulaire sera soumis à FormSubmit qui gère l'envoi par email
+            // FormSubmit redirigera vers la page de remerciement
+        });
+    }
+});
